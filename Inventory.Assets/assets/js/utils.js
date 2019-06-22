@@ -6,3 +6,9 @@ export function bulmaNavbar() {
         $(".navbar-menu").toggleClass("is-active");
     });
 }
+
+export function deleteConfirm() {
+    $(".delete-form").on("submit", () => {
+        return confirm("Are you sure you want to delete this?");
+    });
+}

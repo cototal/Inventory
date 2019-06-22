@@ -3,4 +3,5 @@ import * as utils from "./utils";
 
 $(() => {
     utils.bulmaNavbar();
+    utils.deleteConfirm();
 });
