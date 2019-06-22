@@ -48,6 +48,7 @@ namespace Inventory.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
