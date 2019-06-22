@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@inject  AssetLocator AssetLocator
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Inventory.Web</title>
-
-    <link href="~/build/app.css" rel="stylesheet" />
+    <link href="@AssetLocator.GetAsset("build/app.css")" rel="stylesheet" />
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -39,8 +39,8 @@
         </footer>
     </div>
 
-    <script src="~/build/runtime.js"></script>
-    <script src="~/build/app.js"></script>
+    <script src="@AssetLocator.GetAsset("build/runtime.js")"></script>
+    <script src="@AssetLocator.GetAsset("build/app.js")"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
