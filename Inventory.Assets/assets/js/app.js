@@ -1,5 +1,6 @@
 import "../css/app.scss";
+import * as utils from "./utils";
 
 $(() => {
-    console.log("Loaded");
+    utils.bulmaNavbar();
 });

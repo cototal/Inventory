@@ -1,30 +1,30 @@
-﻿@inject  AssetLocator AssetLocator
+@inject  AssetLocator AssetLocator
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Inventory.Web</title>
+    <title>Inventory | @ViewData["Title"]</title>
     <link href="@AssetLocator.GetAsset("build/app.css")" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Inventory.Web</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a href="/" class="navbar-item">
+                <h2>Inventory</h2>
+            </a>
+            <a class="navbar-burger burger" aria-label="menu" aria-expanded="false" dataa-target="navbarBasic">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="navbarBasic" class="navbar-menu">
+            <div class="navbar-start">
+                <a href="/" class="navbar-item">Home</a>
+                <a class="navbar-item" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                <a class="navbar-item" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                <a class="navbar-item" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
             </div>
         </div>
     </nav>
@@ -35,7 +35,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2019 - Inventory.Web</p>
+            <p>&copy; 2019 - Inventory</p>
         </footer>
     </div>
 
