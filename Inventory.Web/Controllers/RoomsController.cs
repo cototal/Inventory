@@ -19,13 +19,13 @@ namespace Inventory.Web.Controllers
             _context = context;
         }
 
-        // GET: Rooms
         public async Task<IActionResult> Index()
         {
             return View(await _context.Rooms.ToListAsync());
         }
 
-        // GET: Rooms/Details/5
+        [HttpGet]
+        [Route("/rooms/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +44,8 @@ namespace Inventory.Web.Controllers
         }
 
         // GET: Rooms/Create
+        [HttpGet]
+        [Route("/rooms/new")]
         public IActionResult Create()
         {
             return View();
@@ -53,6 +55,7 @@ namespace Inventory.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Route("/rooms/new")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] Room room)
         {
@@ -65,7 +68,8 @@ namespace Inventory.Web.Controllers
             return View(room);
         }
 
-        // GET: Rooms/Edit/5
+        [HttpGet]
+        [Route("/rooms/{id}/edit")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,6 +89,7 @@ namespace Inventory.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Route("/rooms/{id}/edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Room room)
         {
@@ -117,6 +122,8 @@ namespace Inventory.Web.Controllers
         }
 
         // GET: Rooms/Delete/5
+        [HttpGet]
+        [Route("/rooms/{id}/delete")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,7 +142,8 @@ namespace Inventory.Web.Controllers
         }
 
         // POST: Rooms/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [Route("/rooms/{id}/delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
