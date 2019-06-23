@@ -1,4 +1,5 @@
 using Inventory.Web.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.Web.Services
 {
-    public class InventoryContext : DbContext
+    public class InventoryContext : IdentityDbContext<ApplicationUser>
     {
         public InventoryContext(DbContextOptions<InventoryContext> options) : base(options)
         { }
@@ -22,9 +23,11 @@ namespace Inventory.Web.Services
         //    var items = _context.ItemFullViews.ToList();
         public DbQuery<ItemFullView> ItemFullViews { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder
+            base.OnModelCreating(builder);
+
+            builder
                 .Query<ItemFullView>().ToView("View_ItemFullView");
         }
     }

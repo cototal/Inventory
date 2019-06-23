@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Inventory.Web.Models;
 using Inventory.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,10 @@ namespace Inventory.Web
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<InventoryContext>()
+                .AddDefaultTokenProviders();
+
             services.AddSingleton<AssetLocator>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -57,6 +63,7 @@ namespace Inventory.Web
             app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
