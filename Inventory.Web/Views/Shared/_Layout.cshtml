@@ -27,9 +27,15 @@
                 <a class="navbar-item" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
             </div>
             <div class="navbar-end">
-                <form asp-controller="Auth" asp-action="Logout">
-                    <input class="button" type="submit" value="Log Out" />
-                </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-controller="Auth" asp-action="Logout">
+                        <input class="button" type="submit" value="Log Out" />
+                    </form>
+                } else
+                {
+                    <a class="navbar-item" asp-controller="Auth" asp-action="Login">Log In</a>
+                }
             </div>
         </div>
     </nav>

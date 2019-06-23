@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Inventory.Web.Models;
 using Inventory.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Web.Controllers
 {
+    [Authorize]
     public class RoomsController : Controller
     {
         private readonly InventoryContext _context;
