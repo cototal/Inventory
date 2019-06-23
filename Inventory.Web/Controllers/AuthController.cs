@@ -46,7 +46,8 @@ namespace Inventory.Web.Controllers
             {
                 new Claim(ClaimTypes.Role, "user"),
                 new Claim(ClaimTypes.Name, googleUser.Name),
-                new Claim(ClaimTypes.Email, googleUser.Email)
+                new Claim(ClaimTypes.Email, googleUser.Email),
+                new Claim(ClaimTypes.Sid, user.Id.ToString())
             };
             var identity = new ClaimsIdentity(claims, "GoogleAuthLogin");
             var principal = new ClaimsPrincipal(new[] { identity });

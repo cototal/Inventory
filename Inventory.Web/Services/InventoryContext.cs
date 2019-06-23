@@ -23,10 +23,16 @@ namespace Inventory.Web.Services
         //    var items = _context.ItemFullViews.ToList();
         public DbQuery<ItemFullView> ItemFullViews { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder
+            builder
                 .Query<ItemFullView>().ToView("View_ItemFullView");
+
+            builder
+                .Entity<User>(entity =>
+                {
+                    entity.HasIndex(e => e.Email).IsUnique();
+                });
         }
     }
 }

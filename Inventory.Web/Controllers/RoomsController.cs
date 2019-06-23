@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Inventory.Web.Models;
 using Inventory.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System;
 
 namespace Inventory.Web.Controllers
 {
@@ -50,6 +52,11 @@ namespace Inventory.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (UserId() == null)
+                {
+                    return Unauthorized();
+                }
+                room.UserId = (int)UserId();
                 _context.Add(room);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -80,6 +87,11 @@ namespace Inventory.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (UserId() == null)
+                {
+                    return Unauthorized();
+                }
+                room.UserId = (int)UserId();
                 room.Id = id;
                 _context.Update(room);
                 await _context.SaveChangesAsync();
@@ -97,6 +109,16 @@ namespace Inventory.Web.Controllers
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private int? UserId()
+        {
+            var idClaim = User.Claims.Where(c => c.Type == ClaimTypes.Sid).FirstOrDefault();
+            if (idClaim == null)
+            {
+                return null;
+            }
+            return Convert.ToInt32(idClaim.Value);
         }
     }
 }

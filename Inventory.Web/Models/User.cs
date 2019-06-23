@@ -10,5 +10,6 @@ namespace Inventory.Web.Models
     {
         public int Id { get; set; }
         public string Email { get; set; }
+        public ICollection<Room> Rooms { get; set; }
     }
 }
