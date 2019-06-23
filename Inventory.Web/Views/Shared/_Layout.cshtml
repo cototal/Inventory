@@ -26,6 +26,11 @@
                 <a class="navbar-item" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
                 <a class="navbar-item" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
             </div>
+            <div class="navbar-end">
+                <form asp-controller="Auth" asp-action="Logout">
+                    <input class="button" type="submit" value="Log Out" />
+                </form>
+            </div>
         </div>
     </nav>
 

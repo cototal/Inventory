@@ -17,6 +17,7 @@ namespace Inventory.Web.Services
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Container> Containers { get; set; }
         public DbSet<Borrower> Borrowers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         // Access just like a regular DbSet:
         //    var items = _context.ItemFullViews.ToList();

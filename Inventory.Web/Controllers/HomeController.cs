@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Inventory.Web.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Web.Controllers
 {
@@ -17,6 +18,7 @@ namespace Inventory.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -50,6 +52,11 @@ namespace Inventory.Web.Controllers
             // If your model is a string, you must use a two argument overload.
             // otherwise it attempts to use your string as the view file name.
             return View("StatusCode", code);
+        }
+
+        public IActionResult Beta()
+        {
+            return Content("This application is still in beta and not available to the public.");
         }
     }
 }

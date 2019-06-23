@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Inventory.Web.Config;
 using Inventory.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +27,8 @@ namespace Inventory.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var googleApiConfig = new GoogleApi();
+            Configuration.GetSection("GoogleApi").Bind(googleApiConfig);
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -36,9 +40,22 @@ namespace Inventory.Web
             {
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+            });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "GoogleAuthMiddleware";
+                options.DefaultChallengeScheme = "GoogleAuthMiddleware";
+            }).AddCookie("GoogleAuthMiddleware", "GoogleAuthMiddleware", options =>
+            {
+                options.LoginPath = "/auth/google-login";
+                options.AccessDeniedPath = "/home/beta";
+            });
 
             services.AddSingleton<AssetLocator>();
-
+            services.AddSingleton(new GoogleApiConnector(googleApiConfig));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -57,6 +74,7 @@ namespace Inventory.Web
             app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
