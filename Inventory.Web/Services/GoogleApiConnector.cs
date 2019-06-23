@@ -47,7 +47,7 @@ namespace Inventory.Web.Services
             var responseBody = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody);
             return data["access_token"];
-            // 
+            //
         }
 
         public async Task<GoogleUserObject> GoogleUser(string accessToken)

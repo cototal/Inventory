@@ -1,0 +1,19 @@
+@model Inventory.Web.Models.Item
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2 class="title">@Model.Name</h2>
+
+<div>
+    @Html.Raw(Model.Description)
+</div>
+<div>
+    <form class="delete-form" asp-action="Delete" asp-route-id="@Model.Id">
+        <div class="buttons has-addons are-small">
+            <a class="button is-outlined is-link" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+            <input type="submit" value="Delete" class="button is-outlined is-danger delete-link" />
+        </div>
+    </form>
+</div>
