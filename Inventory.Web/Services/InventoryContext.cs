@@ -17,5 +17,15 @@ namespace Inventory.Web.Services
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Container> Containers { get; set; }
         public DbSet<Borrower> Borrowers { get; set; }
+
+        // Access just like a regular DbSet:
+        //    var items = _context.ItemFullViews.ToList();
+        public DbQuery<ItemFullView> ItemFullViews { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Query<ItemFullView>().ToView("View_ItemFullView");
+        }
     }
 }
