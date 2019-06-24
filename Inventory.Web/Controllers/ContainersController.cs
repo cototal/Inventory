@@ -7,6 +7,7 @@ using Inventory.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Inventory.Web.Controllers
 {
@@ -22,14 +23,14 @@ namespace Inventory.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Containers.ToListAsync());
+            return View(await _context.Containers.Include(c => c.Room).ToListAsync());
         }
 
         [HttpGet]
         [Route("/containers/{id}")]
         public async Task<IActionResult> Details(int id)
         {
-            var container = await _context.Containers.FirstOrDefaultAsync(m => m.Id == id);
+            var container = await _context.Containers.Include(c => c.Room).FirstOrDefaultAsync(m => m.Id == id);
             if (container == null)
             {
                 return NotFound();
@@ -40,23 +41,31 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [Route("/containers/new")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var rooms = (await _context.Rooms.ToListAsync()).Select(rm => new SelectListItem
+            {
+                Text = rm.Name,
+                Value = rm.Id.ToString(),
+                Selected = false
+            }).ToList();
+            ViewData["rooms"] = rooms;
             return View();
         }
 
         [HttpPost]
         [Route("/containers/new")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description")] Container container)
+        public async Task<IActionResult> Create([Bind("RoomId,Name,Description")] Container container)
         {
             if (ModelState.IsValid)
             {
-                if (UserId() == null)
+                var room = await GetRoom(container.RoomId);
+                if (room == null)
                 {
-                    return Unauthorized();
+                    return NotFound();
                 }
-                container.UserId = (int)UserId();
+                container.Room = room;
                 _context.Add(container);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -68,6 +77,13 @@ namespace Inventory.Web.Controllers
         [Route("/containers/{id}/edit")]
         public async Task<IActionResult> Edit(int id)
         {
+            var rooms = (await _context.Rooms.ToListAsync()).Select(rm => new SelectListItem
+            {
+                Text = rm.Name,
+                Value = rm.Id.ToString(),
+                Selected = false
+            }).ToList();
+            ViewData["rooms"] = rooms;
             var container = await _context.Containers.FirstOrDefaultAsync(m => m.Id == id);
             if (container == null)
             {
@@ -79,7 +95,7 @@ namespace Inventory.Web.Controllers
         [HttpPost]
         [Route("/containers/{id}/edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description")] Container container)
+        public async Task<IActionResult> Edit(int id, [Bind("RoomId,Name,Description")] Container container)
         {
             if (!_context.Containers.Any(e => e.Id == id))
             {
@@ -87,11 +103,12 @@ namespace Inventory.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (UserId() == null)
+                var room = await GetRoom(container.RoomId);
+                if (room == null)
                 {
-                    return Unauthorized();
+                    return NotFound();
                 }
-                container.UserId = (int)UserId();
+                container.Room = room;
                 container.Id = id;
                 _context.Update(container);
                 await _context.SaveChangesAsync();
@@ -109,6 +126,20 @@ namespace Inventory.Web.Controllers
             _context.Containers.Remove(container);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<Room> GetRoom(int roomId)
+        {
+            var room = await _context.Rooms.FindAsync(roomId);
+            if (room == null)
+            {
+                return null;
+            }
+            if (room.UserId != UserId())
+            {
+                return null;
+            }
+            return room;
         }
 
         private int? UserId()

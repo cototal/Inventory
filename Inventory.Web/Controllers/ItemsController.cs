@@ -48,15 +48,16 @@ namespace Inventory.Web.Controllers
         [HttpPost]
         [Route("/items/new")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description")] Item item)
+        public async Task<IActionResult> Create([Bind("ContainerId,Name,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
-                if (UserId() == null)
+                var container = await GetContainer(item.ContainerId);
+                if (container == null)
                 {
-                    return Unauthorized();
+                    return NotFound();
                 }
-                item.UserId = (int)UserId();
+                item.Container = container;
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -79,7 +80,7 @@ namespace Inventory.Web.Controllers
         [HttpPost]
         [Route("/items/{id}/edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("ContainerId,Name,Description")] Item item)
         {
             if (!_context.Items.Any(e => e.Id == id))
             {
@@ -87,11 +88,12 @@ namespace Inventory.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (UserId() == null)
+                var container = await GetContainer(item.ContainerId);
+                if (container == null)
                 {
-                    return Unauthorized();
+                    return NotFound();
                 }
-                item.UserId = (int)UserId();
+                item.Container = container;
                 item.Id = id;
                 _context.Update(item);
                 await _context.SaveChangesAsync();
@@ -109,6 +111,23 @@ namespace Inventory.Web.Controllers
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        private async Task<Container> GetContainer(int containerId)
+        {
+            var container = await _context.Containers
+                .Include(r => r.Room)
+                .FirstOrDefaultAsync(c => c.Id == containerId);
+
+            if (container == null)
+            {
+                return null;
+            }
+
+            if (container.Room.UserId != UserId())
+            {
+                return null;
+            }
+            return container;
         }
 
         private int? UserId()
