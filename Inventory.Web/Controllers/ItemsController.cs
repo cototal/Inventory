@@ -7,6 +7,7 @@ using Inventory.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Inventory.Web.Controllers
 {
@@ -22,14 +23,17 @@ namespace Inventory.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Items.ToListAsync());
+            var items = await _context.Items.Include(i => i.Container).ThenInclude(c => c.Room).ToListAsync();
+            return View(items);
         }
 
         [HttpGet]
         [Route("/items/{id}")]
         public async Task<IActionResult> Details(int id)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(m => m.Id == id);
+            var item = await _context.Items
+                .Include(i => i.Container).ThenInclude(c => c.Room)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
                 return NotFound();
@@ -40,8 +44,15 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [Route("/items/new")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var containers = (await _context.Containers.ToListAsync()).Select(co => new SelectListItem
+            {
+                Text = co.Name,
+                Value = co.Id.ToString(),
+                Selected = false
+            }).ToList();
+            ViewData["containers"] = containers;
             return View();
         }
 
@@ -69,7 +80,16 @@ namespace Inventory.Web.Controllers
         [Route("/items/{id}/edit")]
         public async Task<IActionResult> Edit(int id)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(m => m.Id == id);
+            var containers = (await _context.Containers.ToListAsync()).Select(co => new SelectListItem
+            {
+                Text = co.Name,
+                Value = co.Id.ToString(),
+                Selected = false
+            }).ToList();
+            ViewData["containers"] = containers;
+            var item = await _context.Items
+                .Include(i => i.Container).ThenInclude(c => c.Room)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
                 return NotFound();

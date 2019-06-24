@@ -6,6 +6,13 @@
 
 <h2 class="title">@Model.Name</h2>
 
+<dl>
+    <dt>Room</dt>
+    <dd>@Model.Container.Room.Name</dd>
+    <dt>Container</dt>
+    <dd>@Model.Container.Name</dd>
+</dl>
+
 <div>
     @Html.Raw(Model.Description)
 </div>
